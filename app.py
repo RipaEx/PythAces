@@ -73,17 +73,18 @@ def prices():
     try:
     	
         conversion_rates = {} 
+        channel = coin['channel']['channel']
         # get conversion rates
         for key in coin:
             if key != "channel":
                 cnv = Conversion(coin['channel']['channel'], key)
                 conversion_rates[key] = cnv.conversion_rate()
+                
         # get fees	
         feeDict = {
                 "flatFee": coin['channel']['flat_fee'],
                 "percentFee": coin['channel']['pct_fee']*100
                     }
-        channel = coin['channel']['channel']
         priceDict = {
                 "channel": channel,
                 "prices": conversion_rates,
@@ -172,7 +173,7 @@ def validate_amount(c,amount):
     url = "http://"+coin['channel']['channel_ip']+"/api/capacity"
     r = requests.get(url)
     avail_cap = r.json()[c]["availableCapacity"] - atomic
-
+    
     limit = 100*atomic
     if amount <= limit:
         if amount < avail_cap:
@@ -221,14 +222,10 @@ def validate_addresses(c, a_addr, b_addr):
 if __name__ == "__main__":
     # get config data
     network, coin = parse_config()
-
-    # check for new rewards accounts to initialize if any changed
-    #acesdb = AceDB(coin['channel']['dbusername'])
     
     #initialize park objects for use
     fx_coins = {}
     for key in coin:
         if key != "channel":
             fx_coins[key] = get_network(key, network, coin[key]['relay_ip'])
-    #app.run()
     app.run(threaded=True)

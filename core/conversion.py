@@ -17,10 +17,13 @@ class Conversion:
         
         r = requests.get(url, params=params)
         
-        #hard code for persona
-        if self.a == 'BTC':
-            p_val = 0.20
-            self.conversion_rate = round((r.json()[self.b][tsyms] / p_val),8)
+        #hard code RIPA until exchange
+        if self.a == 'EOS' or self.b == 'EOS':
+            temp_val = 0.05
+            if self.a == 'EOS':
+                self.conversion_rate = round((r.json()[self.b][tsyms] / temp_val),8)
+            else:
+                self.conversion_rate = round((temp_val / r.json()[self.a][tsyms]),8)
         else:
             self.conversion_rate = round((r.json()[self.b][tsyms] / r.json()[self.a][tsyms]),8)
         
@@ -33,7 +36,7 @@ class Conversion:
                    'persona-t': 'kapu',
                    'lwf-t': 'xrp',
                    'shift-t': 'shift',
-                   'persona': 'btc'}
+                   'ripa':'ruff'}
         
         if a in test.keys():
             return test[a].upper()
